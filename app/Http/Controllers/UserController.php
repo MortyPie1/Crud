@@ -2,51 +2,43 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Symfony\Component\HttpFoundation\Response;
-use App\Http\Resources\UserRecoures;
 
 class UserController extends Controller
 {
-    public function index()
-    {
-        $users = User::all();
-        if ($users->isNotEmpty())
-        {
-            return UserRecoures::collection($users);
-        }
-        return response()->json(['msg'=>'No user found']);
+    public function register(Request $request){
+        $fields = $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'required|digits_between:10,12|unique:users,phone',
+            'password' => 'required|confirmed',
+        ]);
+        $user = User::create($fields);
+        $token = $user->createToken($request->name);
+        return [
+            'user' => $user,
+            'token' => $token->plainTextToken,
+        ];
     }
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'comment_id' => 'required|integer|unique:comments,comment_id',
-            'title' => 'required|string',
-            'body' => 'required|string']);
-        $users = User::create($validated);
-
-        return response()->json($users, Response::HTTP_CREATED);
-    }
-    public function update(Request $request, $id)
-    {
-        $users = User::where('id', $id)->first();
-        if (!$users)
-        {
-            return response()->json(['msg','No user found'], Response::HTTP_NOT_FOUND);
+    public function login(Request $request){
+        $fields = $request->validate([
+            'phone' => 'required|digits_between:10,12|exists:users',
+            'password' => 'required']);
+        $user = User::where('phone', $request->phone)->first();
+        if (!$user || !Hash::check(request('password'), $user->password)) {
+            return ['message' => 'These credentials do not.'];
         }
-        $users->update($request->all());
-        return response()->json($users, Response::HTTP_ACCEPTED);
+        $token = $user->createToken($user->name);
+        return [
+            'user' => $user,
+            'token' => $token->plainTextToken,
+        ];
     }
-    public function destroy($id)
-    {
-        $users = User::where('id', $id)->first();
-        if (!$users) {
-            return response()->json(['message'=>'No data found'], Response::HTTP_NOT_FOUND);
-        }
-        $users->delete();
-        return response()->json('Deleted successfully', Response::HTTP_OK);
+    public function logout(Request $request){
+        $request->user()->tokens()->delete();
+        return ['message' => 'Logged out'];
     }
 
 }

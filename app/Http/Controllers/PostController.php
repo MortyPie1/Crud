@@ -22,9 +22,10 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'comment_id' => 'required|integer|unique:comments,comment_id',
+            'post_id' => 'required|integer|unique:posts',
             'title' => 'required|string',
-            'body' => 'required|string']);
+            'body' => 'required|string',
+            'user_id'=>'required']);
         $posts = Post::create($validated);
 
         return response()->json($posts, Response::HTTP_CREATED);

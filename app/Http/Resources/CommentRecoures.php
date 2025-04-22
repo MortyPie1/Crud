@@ -4,6 +4,8 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\PostRecoures;
+
 
 class CommentRecoures extends JsonResource
 {
@@ -18,6 +20,8 @@ class CommentRecoures extends JsonResource
             'comment_id'=>$this ->comment_id,
             'title'=>$this ->title,
             'body'=>$this ->body,
+            'posts' => PostRecoures::collection($this->commnets),
+            'user_id'=>$this ->user_id
         ];
     }
 }

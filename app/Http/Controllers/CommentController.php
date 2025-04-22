@@ -17,14 +17,16 @@ class CommentController extends Controller
         {
             return CommentRecoures::collection($comments);
         }
-        return response()->json(['msg'=>'No comments found']);
+        return response()->json(['msg'=>'No comments found at all']);
     }
     public function store(Request $request)
     {
         $validated = $request->validate([
             'comment_id' => 'required|integer|unique:comments,comment_id',
             'title' => 'required|string',
-            'body' => 'required|string']);
+            'body' => 'required|string',
+        'user_id'=>'required|exists:users,id',
+            'post_id'=>'required|exists:posts,id',]);
         $comments = Comment::create($validated);
 
         return response()->json($comments, Response::HTTP_CREATED);

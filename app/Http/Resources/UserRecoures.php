@@ -16,7 +16,7 @@ class UserRecoures extends JsonResource
     {
          return [
         'name'=>$this ->name,
-        'phone'=>$this ->title,
+        'phone'=>$this ->phone,
         'password'=>$this ->password,
     ];
     }

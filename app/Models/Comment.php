@@ -14,12 +14,14 @@ class Comment extends Model
         [
             'comment_id',
             'title',
-            'body'
+            'body',
+            'post_id',
+            'user_id'
 
         ];
     public function post()
     {
-        return $this->belongsTo(Post::class);
+        return $this->hasMany(Post::class);
 
     }
     public function user()
