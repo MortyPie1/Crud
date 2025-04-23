@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Comment\CreateCommentRequest;
+use App\Http\Requests\Comment\UpdateCommentRequest;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -12,32 +14,42 @@ class CommentController extends Controller
 {
     public function index()
     {
-        $comments = Comment::all();
-        if ($comments->isNotEmpty())
-        {
-            return CommentRecoures::collection($comments);
-        }
-        return response()->json(['msg'=>'No comments found']);
+        return Comment::with('user', 'post')->get();
+        // $comments = Comment::all();
+        // if ($comments->isNotEmpty())
+        // {
+        //     return CommentRecoures::collection($comments);
+        // }
+        // return response()->json(['msg'=>'No comments found']);
     }
-    public function store(Request $request)
+    public function store(CreateCommentRequest $request)
     {
-        $validated = $request->validate([
-            'comment_id' => 'required|integer|unique:comments,comment_id',
-            'title' => 'required|string',
-            'body' => 'required|string']);
-        $comments = Comment::create($validated);
+        $data = $request->validated();
+        Comment::create($data);
+        return response()->json(["message" => "Comment Created"], Response::HTTP_CREATED);
+        // $validated = $request->validate([
+        //     'comment_id' => 'required|integer|unique:comments,comment_id',
+        //     'title' => 'required|string',
+        //     'body' => 'required|string']);
+        // $comments = Comment::create($validated);
 
-        return response()->json($comments, Response::HTTP_CREATED);
+        // return response()->json($comments, Response::HTTP_CREATED);
     }
-    public function update(Request $request, $id)
+    public function update(UpdateCommentRequest $request, $id)
     {
-        $comments = Comment::where('id', $id)->first();
-        if (!$comments)
-        {
-            return response()->json(['msg','No comments found'], Response::HTTP_NOT_FOUND);
+        $comment = Comment::where('id', $id)->first();
+        if(!$comment) {
+            return response()->json(['message','No comments found'], Response::HTTP_NOT_FOUND);
         }
-        $comments->update($request->all());
-        return response()->json($comments, Response::HTTP_ACCEPTED);
+        $comment->update($request->validated());
+        return response()->json(["message" => "Comment created"], Response::HTTP_ACCEPTED);
+        // $comments = Comment::where('id', $id)->first();
+        // if (!$comments)
+        // {
+        //     return response()->json(['msg','No comments found'], Response::HTTP_NOT_FOUND);
+        // }
+        // $comments->update($request->all());
+        // return response()->json($comments, Response::HTTP_ACCEPTED);
     }
     public function destroy($id)
     {
