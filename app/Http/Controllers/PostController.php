@@ -12,6 +12,7 @@ use App\Http\Resources\PostRecoures;
 
 class PostController extends Controller
 {
+
     public function index()
     {
         return Post::with('user')->get()->makeHidden(['post_id', 'user_id','id', 'created_at', 'updated_at']);
@@ -35,6 +36,7 @@ class PostController extends Controller
     public function store(CreatePostRequest $request)
     {
         $data = $request->validated();
+        $data['user_id'] = auth()->user()->id;
         Post::create($data);
         return response()->json(["message" => "Posts Created"], Response::HTTP_CREATED);
 

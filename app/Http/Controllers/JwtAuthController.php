@@ -22,7 +22,8 @@ class JwtAuthController extends Controller
     }
     public function login(LoginUserRequest $request){
         $data = $request->validated();
-        if(!$token=auth()->attempt($data) ){
+        $token = auth()->attempt($data);
+        if(!$token){
             return response()->json(['error' => 'Unauthorized'], 401);
         }
         return $this->createNewToken($token);

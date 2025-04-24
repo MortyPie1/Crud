@@ -22,9 +22,10 @@ class CreatePostRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'post_id' => 'required',
             'title' => 'required|string',
             'body' => 'required|string',
-            'user_id' => 'required|exists:users,id',
+           // 'user_id' => 'required|exists:users,id',
         ];
     }
 }
