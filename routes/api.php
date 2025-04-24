@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
+use App\http\Controllers\JwtAuthController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -42,3 +43,9 @@ Route::post('comment', [CommentController::class,'store']);
 Route::get('comment/{id}', [CommentController::class,'show']);
 Route::patch('comment/{id}', [CommentController::class,'update']);
 Route::delete('comment/{id}', [CommentController::class,'destroy']);
+
+Route::group(['middleware'=>'api','prefix'=>'auth'],function($router){});
+
+Route::post('register',[JwtAuthController::class,'register']);
+Route::post('login',[JwtAuthController::class,'login']);
+Route::post('logout',[JwtAuthController::class,'logout']);

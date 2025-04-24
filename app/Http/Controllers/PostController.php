@@ -14,7 +14,7 @@ class PostController extends Controller
 {
     public function index()
     {
-        return Post::with('user')->get();
+        return Post::with('user')->get()->makeHidden(['post_id', 'user_id','id', 'created_at', 'updated_at']);
         // $posts = Post::all();
         // if ($posts->isNotEmpty())
         // {

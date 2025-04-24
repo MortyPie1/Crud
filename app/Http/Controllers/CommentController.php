@@ -10,10 +10,12 @@ use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\CommentRecoures;
 
+
 class CommentController extends Controller
 {
     public function index()
     {
+
         return Comment::with('user', 'post')->get();
         // $comments = Comment::all();
         // if ($comments->isNotEmpty())
