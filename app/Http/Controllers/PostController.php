@@ -5,10 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Post\CreatePostRequest;
 use App\Http\Requests\Post\UpdatePostRequest;
 use App\Models\Post;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
-use App\Http\Resources\PostRecoures;
 
 class PostController extends Controller
 {
@@ -16,12 +14,11 @@ class PostController extends Controller
     public function index()
     {
         return Post::with('user')->get()->makeHidden(['post_id', 'user_id','id', 'created_at', 'updated_at']);
-        // $posts = Post::all();
-        // if ($posts->isNotEmpty())
-        // {
-        //     return PostRecoures::collection($posts);
-        // }
-        // return response()->json(['msg'=>'No posts found']);
+    }
+    public function currentUser(){
+        $currentuser = auth::id();
+
+        return Post::where('user_id',$currentuser)->with('user')->get();
     }
 
     public function show($id)
@@ -39,14 +36,6 @@ class PostController extends Controller
         $data['user_id'] = auth()->user()->id;
         Post::create($data);
         return response()->json(["message" => "Posts Created"], Response::HTTP_CREATED);
-
-        // $validated = $request->validate([
-        //     'comment_id' => 'required|integer|unique:comments,comment_id', // xxxx
-        //     'title' => 'required|string',
-        //     'body' => 'required|string'
-        // ]);
-        // $posts = Post::create($validated);
-        // return response()->json($posts, Response::HTTP_CREATED);
     }
     public function update(UpdatePostRequest $request, $id)
     {
@@ -56,14 +45,6 @@ class PostController extends Controller
         }
         $posts->update($request->validated());
         return response()->json(["message" => "Post updated"], Response::HTTP_ACCEPTED);
-
-        // $posts = Post::where('id', $id)->first();
-        // if (!$posts)
-        // {
-        //     return response()->json(['msg','No posts found'], Response::HTTP_NOT_FOUND);
-        // }
-        // $posts->update($request->all());
-        // return response()->json($posts, Response::HTTP_ACCEPTED);
     }
     public function destroy($id)
     {
