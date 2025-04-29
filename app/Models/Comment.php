@@ -28,13 +28,7 @@ class Comment extends Model
         return $this->belongsTo(User::class);
     }
     public function getBelongAttribute(){
-        $mypost = $this ->user_id;
-        if($mypost == auth::id()){
-            return true;
-        }
-
-        return false;
-
+        return auth()->id() === $this->user_id;
     }
     protected $appends = ['Belong'];
 
