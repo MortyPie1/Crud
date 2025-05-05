@@ -24,7 +24,6 @@ class UpdatePostRequest extends FormRequest
         return [
             'title' => 'required|string',
             'body' => 'required|string',
-            'user_id' => 'required|exists:users,id',
         ];
     }
 }

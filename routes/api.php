@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
+use \App\Http\Controllers\AdminController;
 use App\http\Controllers\JwtAuthController;
 
 Route::group(['middleware' => ['auth:api']], function() {
@@ -25,6 +26,11 @@ Route::group(['middleware' => ['auth:api']], function() {
     Route::get('comment/{id}', [CommentController::class,'show']);
     Route::patch('comment/{id}', [CommentController::class,'update']);
     Route::delete('comment/{id}', [CommentController::class,'destroy']);
+
+    Route::get('statics', [AdminController::class,'statics']);
+    Route::get('statics/users/{id}', [AdminController::class,'UsersInfo']);
+    Route::patch('update/{type}/{id}', [AdminController::class,'update']);
+    Route::delete('delete/{type}/{id}', [AdminController::class,'delete']);
 });
 Route::post('register',[JwtAuthController::class,'register']);
 Route::post('login',[JwtAuthController::class,'login']);

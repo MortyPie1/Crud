@@ -39,12 +39,14 @@ class PostController extends Controller
     }
     public function update(UpdatePostRequest $request, $id)
     {
-        $posts = Post::where('id', $id)->first();
-        if (!$posts) {
-            return response()->json(['message', 'No posts found'], Response::HTTP_NOT_FOUND);
+        $post = Post::where('id', $id)->first();
+        if (!$post) {
+            return response()->json(['message'=> 'No posts found'], Response::HTTP_NOT_FOUND);
         }
-        $posts->update($request->validated());
-        return response()->json(["message" => "Post updated"], Response::HTTP_ACCEPTED);
+        if ($post['user_id']==auth::id()){
+            $post->update($request->validated());
+            return response()->json(["message" => "Post updated"], Response::HTTP_ACCEPTED);}
+            return response()->json(['message'=>'you are not authorized'], Response::HTTP_FORBIDDEN);
     }
     public function destroy($id)
     {

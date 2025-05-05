@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Auth;
 
 
 class Comment extends Model
@@ -28,6 +29,14 @@ class Comment extends Model
     }
     public function getBelongAttribute(){
         return auth()->id() === $this->user_id;
+
+
+        $mypost = $this ->user_id;
+        if($mypost == auth::id()){
+            return true;
+        }
+        return false;
+
     }
     protected $appends = ['Belong'];
 
