@@ -10,7 +10,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 class User extends Authenticatable implements JWTSubject
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable ;
 
     /**
      * The attributes that are mass assignable.
@@ -21,6 +21,7 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'phone',
         'password',
+        'role'
     ];
 
     /**
@@ -60,4 +61,5 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
 }
